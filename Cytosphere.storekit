@@ -1,0 +1,34 @@
+{
+  "identifier" : "F8C8C5B0-CYTO-0000-0000-CYTOSPHERE",
+  "nonRenewingSubscriptions" : [],
+  "products" : [
+    {
+      "displayPrice" : "9.99",
+      "familyShareable" : false,
+      "internalID" : "B12345AA",
+      "localizations" : [
+        {
+          "description" : "Unlocks all twelve generative patterns and the full export resolution range.",
+          "displayName" : "Unlock All Patterns",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.aintmer.cytosphere.unlock_all",
+      "referenceName" : "Unlock All Patterns",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_applicationInternalID" : "1234567890",
+    "_developerTeamID" : "F6GPTM54F7",
+    "_failTransactionsEnabled" : false,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : []
+  },
+  "subscriptionGroups" : [],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}

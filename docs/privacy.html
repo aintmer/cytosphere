@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy — Cytosphere</title>
+    <meta name="description" content="Cytosphere's privacy policy. We collect anonymous usage counts and nothing else.">
+    <meta name="theme-color" content="#1a0e2e">
+    <link rel="icon" type="image/png" href="assets/icon.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <nav class="nav">
+        <a class="nav-brand" href="index.html" style="color: var(--text); text-decoration: none;">
+            <img src="assets/icon.png" alt="Cytosphere icon">
+            <span>Cytosphere</span>
+        </a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="support.html">Support</a>
+        </div>
+    </nav>
+</div>
+
+<article class="doc">
+    <h1>Privacy Policy</h1>
+    <p class="doc-meta">Last updated: 2026-05-26</p>
+
+    <p>This policy describes what data Cytosphere ("the app", "we", "us") collects, how we use it, and what choices you have. It applies to the Cytosphere app for iPhone, iPad, and Mac, and to this website.</p>
+
+    <h2>Short version</h2>
+    <p><strong>We collect anonymous usage counts and nothing else.</strong> No accounts, no advertising, no personal data, no cross-app tracking. Every wallpaper render happens on your device. Photos saved to your library never leave your device through us.</p>
+
+    <h2>What we collect</h2>
+    <p>Cytosphere sends a small number of anonymous, aggregate event signals to <a href="https://telemetrydeck.com">TelemetryDeck</a>, a privacy-first analytics service based in Germany. The signals are limited to:</p>
+    <ul>
+        <li><strong>App launches</strong> — that the app started, nothing about who started it.</li>
+        <li><strong>Pattern usage counts</strong> — which generative patterns are picked, so we know which to invest in. Aggregate counts across all users, no per-user history.</li>
+        <li><strong>Export counts</strong> — that exports happen, the pattern + resolution chosen, and whether they succeeded or failed.</li>
+        <li><strong>Preset and randomize button taps</strong> — to understand which controls users actually use.</li>
+        <li><strong>Crash-style errors</strong> — when something fails (e.g. Photos permission denied), the error type. No personal context.</li>
+    </ul>
+
+    <h2>What we do NOT collect</h2>
+    <ul>
+        <li>Your name, email, Apple ID, or any identifier that links events back to you.</li>
+        <li>Your IP address (TelemetryDeck strips it before processing).</li>
+        <li>Your photos, library contents, or any content you create with the app.</li>
+        <li>Your location.</li>
+        <li>Your contacts, calendars, or any other system data.</li>
+        <li>Your browsing behavior outside the app.</li>
+        <li>Any data for advertising or third-party tracking purposes.</li>
+    </ul>
+
+    <h2>How TelemetryDeck handles the data</h2>
+    <p>TelemetryDeck is a German company subject to the EU's GDPR. They do not log IP addresses, do not use cookies, and do not link signals across apps. They store aggregate counts. Their full privacy policy is available at <a href="https://telemetrydeck.com/privacy/">telemetrydeck.com/privacy</a>.</p>
+
+    <h2>Permissions the app may ask for</h2>
+    <h3>Photo library (iOS / iPadOS)</h3>
+    <p>When you export a wallpaper on iPhone or iPad, the app asks for permission to <em>add</em> images to your Photos library (the "add-only" permission, not full library read). The exported wallpaper is saved directly to Photos. We never read photos from your library and never transmit them anywhere.</p>
+
+    <h3>Background processing (iOS / iPadOS)</h3>
+    <p>For exports at the highest resolutions (10K and 16K), the app briefly requests background-task time so the render can finish if you switch apps mid-export. This is a system-level capability — no data leaves your device.</p>
+
+    <h2>Payments and in-app purchases</h2>
+    <p>The "Unlock All Patterns" in-app purchase is handled entirely by Apple's App Store. We do not see your payment information. Apple shares with us only the anonymized transaction record and aggregate sales data via App Store Connect — never personally identifiable information.</p>
+
+    <h2>Children</h2>
+    <p>Cytosphere is rated 4+ and contains no objectionable content. We do not knowingly collect any data from children under 13, and the app's analytics signals are anonymous regardless of user age.</p>
+
+    <h2>Data retention</h2>
+    <p>TelemetryDeck retains aggregate signal counts for up to 24 months. Because the signals are not linked to any user, there is no per-user data to delete on request.</p>
+
+    <h2>Your choices</h2>
+    <ul>
+        <li><strong>Block analytics at the network level</strong> — if you use a content blocker or DNS-level filter (Pi-hole, NextDNS, AdGuard, etc.), blocking <code>nom.telemetrydeck.com</code> will prevent the app from sending any analytics. The app will continue to function normally.</li>
+        <li><strong>Deny Photos permission</strong> — the app will work for previewing wallpapers but will be unable to save exports to your library until you re-enable the permission in iOS Settings.</li>
+    </ul>
+
+    <h2>Changes to this policy</h2>
+    <p>If we change what we collect or how we use it, we will update this page and bump the "Last updated" date. Material changes (e.g. introducing new data collection) will be announced in the app's release notes.</p>
+
+    <h2>Contact</h2>
+    <p>Questions or concerns: see the <a href="support.html">support page</a>.</p>
+</article>
+
+</body>
+</html>

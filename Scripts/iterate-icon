@@ -1,0 +1,104 @@
+#!/bin/bash
+#
+# iterate-icon — full icon iteration pipeline in one command.
+#
+# Skips xcodebuild (~9s) by calling actool directly to recompile JUST the
+# asset catalog into the existing app bundle. Skips Dock restart by default
+# (use --flush-dock if cached icons appear stale).
+#
+# Usage from project root:
+#   ./Scripts/iterate-icon              # update bundle icon, ~1-2s
+#   ./Scripts/iterate-icon --launch     # also quit + relaunch the app so
+#                                       # the new icon shows in the Dock
+#   ./Scripts/iterate-icon --flush-dock # full Dock+Finder cache flush
+#   ./Scripts/iterate-icon --build-first # run xcodebuild once first
+#   ./Scripts/iterate-icon --timing     # print per-step timing
+#
+# Typical iteration loop (~2.5s):
+#   1. edit Scripts/render_app_icon.swift
+#   2. ./Scripts/iterate-icon --launch
+#   3. see new icon in the Dock — no Xcode rebuild needed.
+#
+set -e
+
+PROJECT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+APP="/Users/aintmer/Library/Developer/Xcode/DerivedData/TrajectoryWallpaper-ebvghdvicerfnkajmtsiubjwakdd/Build/Products/Debug/TrajectoryWallpaper.app"
+ASSETS="$PROJECT/Sources/Resources/Assets.xcassets"
+
+BUILD_FIRST=false
+FLUSH_DOCK=false
+TIMING=false
+LAUNCH=false
+for arg in "$@"; do
+    case "$arg" in
+        --build-first) BUILD_FIRST=true ;;
+        --flush-dock)  FLUSH_DOCK=true ;;
+        --timing)      TIMING=true ;;
+        --launch)      LAUNCH=true ;;
+    esac
+done
+
+# Timing helper — runs `$@`, suppresses its stdout/stderr, and prints elapsed
+# seconds to stderr when --timing is set. The internal output suppression
+# avoids the bug where an external `> /dev/null` redirect on the call would
+# also swallow the timing message.
+t() {
+    local label="$1"; shift
+    if [ "$TIMING" = true ]; then
+        local start end
+        start=$(perl -MTime::HiRes=time -e 'printf "%.3f", time')
+        "$@" >/dev/null 2>&1
+        end=$(perl -MTime::HiRes=time -e 'printf "%.3f", time')
+        printf "  %-32s %.2fs\n" "$label" "$(echo "$end - $start" | bc)" >&2
+    else
+        "$@" >/dev/null 2>&1
+    fi
+}
+
+if [ "$BUILD_FIRST" = true ]; then
+    echo "Full xcodebuild..."
+    t "xcodebuild" bash -c "cd '$PROJECT' && xcodebuild -scheme TrajectoryWallpaper -destination 'platform=macOS' build > /dev/null"
+fi
+
+if [ ! -d "$APP" ]; then
+    echo "ERROR: app bundle not found at:"
+    echo "  $APP"
+    echo "Run with --build-first to do a full xcodebuild."
+    exit 1
+fi
+
+# 1. Render PNGs (~0.1s cached, ~3.6s on source change)
+t "render"        "$PROJECT/Scripts/render-icon"
+
+# 2. Compile asset catalog directly into the bundle (~1.2s)
+t "actool"        xcrun actool "$ASSETS" \
+    --compile "$APP/Contents/Resources" \
+    --app-icon AppIcon \
+    --output-partial-info-plist /tmp/_icon_partial.plist \
+    --platform macosx \
+    --minimum-deployment-target 14.0 \
+    --output-format human-readable-text
+rm -f /tmp/_icon_partial.plist
+
+# 3. Refresh icon cache — quit the app (so it doesn't hold the old icon),
+# touch the bundle to nudge LaunchServices, and re-register. Skip the Dock
+# restart unless --flush-dock is passed.
+# Use bundle ID — survives display-name renames (e.g. Cytosphere vs the
+# original TrajectoryWallpaper bundle filename).
+t "quit app"      osascript -e 'tell application id "com.aintmer.TrajectoryWallpaper" to quit' || true
+t "touch bundle"  touch "$APP"
+t "lsregister"    /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister -f "$APP"
+
+if [ "$FLUSH_DOCK" = true ]; then
+    t "kill Dock"   killall Dock
+    t "kill Finder" killall Finder
+fi
+
+# Launch the app so you see the new icon in the Dock immediately. No need to
+# kill the Dock when launching — the running app instance pulls its icon
+# directly from the bundle's freshly-updated Assets.car.
+if [ "$LAUNCH" = true ]; then
+    t "open app"  open "$APP"
+fi
+
+echo "done"

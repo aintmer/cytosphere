@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support — Cytosphere</title>
+    <meta name="description" content="Cytosphere support: FAQ and how to get help.">
+    <meta name="theme-color" content="#1a0e2e">
+    <link rel="icon" type="image/png" href="assets/icon.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <nav class="nav">
+        <a class="nav-brand" href="index.html" style="color: var(--text); text-decoration: none;">
+            <img src="assets/icon.png" alt="Cytosphere icon">
+            <span>Cytosphere</span>
+        </a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="privacy.html">Privacy</a>
+        </div>
+    </nav>
+</div>
+
+<article class="doc">
+    <h1>Support</h1>
+    <p class="doc-meta">Trouble with Cytosphere? Start here.</p>
+
+    <h2>Getting in touch</h2>
+    <p>The fastest way to reach me is by email: <a href="mailto:cytosphere@aintmer.com">cytosphere@aintmer.com</a>.</p>
+    <p>Please include:</p>
+    <ul>
+        <li>Your device (iPhone model, iPad model, or Mac model)</li>
+        <li>The version of Cytosphere you're using (visible in the About sheet)</li>
+        <li>A short description of what happened and what you expected</li>
+    </ul>
+
+    <h2>Frequently asked</h2>
+
+    <h3>I bought "Unlock All Patterns" on one device. Why are patterns still locked on my other devices?</h3>
+    <p>The purchase is tied to your Apple ID, not the device. Open Cytosphere on the second device, tap About → Restore purchases. Make sure both devices are signed in to the same Apple ID.</p>
+
+    <h3>Export is taking too long.</h3>
+    <p>Render time scales with the chosen quality and resolution. Standard (6K) is the fastest; Ultra (16K) on an iPhone takes ~10-20 seconds depending on the pattern. If a render runs longer than ~60 seconds, please report it with the pattern + quality + device — that's not expected.</p>
+
+    <h3>The app says "Export interrupted — keep the app in the foreground while exporting."</h3>
+    <p>iOS limits how much background time apps get. For Ultra-quality exports on older iPhones, leaving the app open during the render is the most reliable option. Standard and High quality are well within the background-time budget.</p>
+
+    <h3>Photos access is denied. How do I re-enable it?</h3>
+    <p>iOS Settings → Privacy &amp; Security → Photos → Cytosphere → choose Add Photos Only (or Full Access). Then return to Cytosphere and try the export again.</p>
+
+    <h3>How do I delete my data?</h3>
+    <p>There is no personal data to delete — Cytosphere only collects anonymous aggregate event counts (see the <a href="privacy.html">privacy policy</a>). Deleting the app removes all local presets, saved configurations, and the purchase state cache from your device. The in-app-purchase entitlement remains with your Apple ID and can be restored at any time.</p>
+
+    <h3>Can I use Cytosphere wallpapers commercially?</h3>
+    <p>Yes — exports you create with Cytosphere are yours to use however you want, including commercially. The app's procedural patterns are not copyrighted. The only exception is the Blood pattern's cell art, which is derived from a CC&nbsp;BY-SA&nbsp;3.0 Wikipedia source; if you use a Blood-pattern export commercially, the attribution requirement applies (see the About sheet for the full credit).</p>
+
+    <h3>Will there be more patterns?</h3>
+    <p>Yes — additional patterns are planned and will be added in free updates to existing "Unlock All Patterns" customers.</p>
+
+    <h3>Is Cytosphere available on Android / Windows / Linux?</h3>
+    <p>No, and not planned. The app is built natively on Apple's frameworks (SwiftUI, CoreGraphics) and depends on platform-specific export and IAP pipelines.</p>
+
+    <h2>Reporting bugs and suggestions</h2>
+    <p>Send them to <a href="mailto:cytosphere@aintmer.com">cytosphere@aintmer.com</a>. I read every email. Reproduction steps, screenshots, and console logs (if you can grab them via Console.app or the device's developer mode) are appreciated but not required.</p>
+</article>
+
+</body>
+</html>

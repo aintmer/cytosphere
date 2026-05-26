@@ -1,0 +1,37 @@
+#!/bin/bash
+#
+# render-icon — fast wrapper around render_app_icon.swift
+#
+# `swift script.swift` always recompiles, which takes 10–30s for a
+# CoreGraphics-heavy script. This wrapper compiles once with `swiftc -O` and
+# caches the binary in Scripts/.bin/; subsequent runs are instant unless the
+# source has changed (mtime check). Re-run with --force to recompile anyway.
+#
+# Usage from project root:
+#   ./Scripts/render-icon
+#   ./Scripts/render-icon --force
+#
+set -e
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SRC="$DIR/render_app_icon.swift"
+BIN_DIR="$DIR/.bin"
+BIN="$BIN_DIR/render_app_icon"
+
+mkdir -p "$BIN_DIR"
+
+NEED_COMPILE=false
+if [ "$1" = "--force" ] || [ ! -f "$BIN" ] || [ "$SRC" -nt "$BIN" ]; then
+    NEED_COMPILE=true
+fi
+
+if [ "$NEED_COMPILE" = true ]; then
+    echo "Compiling renderer (one-time per source change)..."
+    # -Onone instead of -O drops compile time from ~6s to ~2s. The runtime
+    # cost is negligible — rendering 11 small PNGs takes the same fraction
+    # of a second either way.
+    swiftc -Onone "$SRC" -o "$BIN"
+fi
+
+# Run from the project root so the script's relative-path lookup works.
+cd "$DIR/.."
+exec "$BIN"
