@@ -91,11 +91,25 @@
         <p>A few of the looks you can produce in seconds. Real exports — no compositing, no touch-ups.</p>
 
         <div class="shots">
-            <div class="shot"><img src="assets/sample-1-blood.jpg" alt="Hematopoiesis pattern on a warm peach background"></div>
-            <div class="shot"><img src="assets/sample-2-mitosis.jpg" alt="Mitosis pattern on a deep aurora background"></div>
-            <div class="shot"><img src="assets/sample-3-orbitals.jpg" alt="Atomic orbitals pattern on a dark dusk background"></div>
-            <div class="shot"><img src="assets/sample-4-viruses.jpg" alt="Viral capsids pattern on a dark dusk background"></div>
+            <button class="shot" data-img="assets/sample-1-blood.jpg" data-alt="Hematopoiesis pattern on a warm peach background" aria-label="Enlarge: Hematopoiesis pattern">
+                <img src="assets/sample-1-blood.jpg" alt="Hematopoiesis pattern on a warm peach background">
+            </button>
+            <button class="shot" data-img="assets/sample-2-mitosis.jpg" data-alt="Mitosis pattern on a deep aurora background" aria-label="Enlarge: Mitosis pattern">
+                <img src="assets/sample-2-mitosis.jpg" alt="Mitosis pattern on a deep aurora background">
+            </button>
+            <button class="shot" data-img="assets/sample-3-orbitals.jpg" data-alt="Atomic orbitals pattern on a dark dusk background" aria-label="Enlarge: Atomic orbitals pattern">
+                <img src="assets/sample-3-orbitals.jpg" alt="Atomic orbitals pattern on a dark dusk background">
+            </button>
+            <button class="shot" data-img="assets/sample-4-viruses.jpg" data-alt="Viral capsids pattern on a dark dusk background" aria-label="Enlarge: Viral capsids pattern">
+                <img src="assets/sample-4-viruses.jpg" alt="Viral capsids pattern on a dark dusk background">
+            </button>
         </div>
+
+        <!-- Lightbox dialog — opens when any .shot is clicked -->
+        <dialog id="lightbox" class="lightbox" aria-label="Wallpaper preview">
+            <button class="lightbox-close" aria-label="Close preview">×</button>
+            <img id="lightbox-img" alt="">
+        </dialog>
     </section>
 
     <!-- Patterns -->
@@ -168,6 +182,29 @@
     </footer>
 
 </div>
+
+<script>
+    // Lightbox: click any .shot to open the native <dialog> with the
+    // full-size image. ESC and backdrop click both close (native behavior).
+    (() => {
+        const dialog = document.getElementById('lightbox');
+        const img = document.getElementById('lightbox-img');
+        document.querySelectorAll('.shot[data-img]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                img.src = btn.dataset.img;
+                img.alt = btn.dataset.alt || '';
+                dialog.showModal();
+            });
+        });
+        // Close button
+        document.querySelector('.lightbox-close')
+            .addEventListener('click', () => dialog.close());
+        // Click anywhere on the backdrop (outside the image) also closes
+        dialog.addEventListener('click', e => {
+            if (e.target === dialog) dialog.close();
+        });
+    })();
+</script>
 
 </body>
 </html>
