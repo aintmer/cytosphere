@@ -218,19 +218,24 @@ a:hover { color: #f0a8ff; }
     aspect-ratio: 1 / 1;             /* exports are square 6K × 6K */
     border-radius: 22px;
     overflow: hidden;
+    /* Background only shows during image-loading; once the img paints it
+       covers the whole tile, so we don't need a border or contrasting bg. */
     background: var(--bg-card);
-    border: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: center;
-    color: var(--text-faint);
-    font-size: 12px;
-    text-align: center;
+    border: none;
+    display: block;
     position: relative;
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
-    /* Reset <button> defaults */
+    /* Reset <button> defaults (margins, padding, font) */
+    margin: 0;
     padding: 0;
     cursor: pointer;
     font-family: inherit;
+    color: var(--text-faint);
+    font-size: 12px;
+    text-align: center;
     transition: transform 0.15s ease, box-shadow 0.15s ease;
+    -webkit-appearance: none;
+    appearance: none;
 }
 .shot:hover {
     transform: translateY(-3px);
@@ -245,6 +250,8 @@ a:hover { color: #f0a8ff; }
     width: 100%; height: 100%;
     object-fit: cover;
     display: block;
+    /* Strip the default inline-baseline gap below an <img> */
+    vertical-align: bottom;
 }
 .shot.placeholder::before {
     content: "📱  Sample wallpaper";
@@ -253,30 +260,39 @@ a:hover { color: #f0a8ff; }
 }
 
 /* Lightbox modal — uses native <dialog> for accessibility (focus trap,
-   ESC to close, etc.) */
-.lightbox {
+   ESC to close, etc.). The dialog auto-sizes to the image rather than
+   filling 92vw — that way there's no white frame around the image. */
+dialog.lightbox {
     border: none;
     padding: 0;
+    margin: auto;
+    /* User-agent stylesheet sets a white background on <dialog>; override
+       both 'background' and 'background-color' so neither wins. */
     background: transparent;
+    background-color: transparent;
+    color: inherit;
     overflow: visible;
+    /* Let the dialog shrink to fit its single <img> child */
+    width: fit-content;
     max-width: 92vw;
     max-height: 92vh;
 }
-.lightbox::backdrop {
+dialog.lightbox::backdrop {
     background: rgba(8, 4, 16, 0.88);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
 }
-.lightbox img {
+dialog.lightbox img {
     display: block;
     max-width: 92vw;
     max-height: 92vh;
+    width: auto; height: auto;        /* preserve native aspect ratio */
     border-radius: 16px;
     box-shadow: 0 24px 72px rgba(0, 0, 0, 0.7);
 }
 .lightbox-close {
     position: absolute;
-    top: -52px; right: -8px;
+    top: -52px; right: 0;
     background: rgba(255, 255, 255, 0.12);
     color: white;
     border: 1px solid rgba(255, 255, 255, 0.15);
@@ -288,6 +304,7 @@ a:hover { color: #f0a8ff; }
     display: flex; align-items: center; justify-content: center;
     transition: background 0.15s;
     font-family: inherit;
+    z-index: 1;
 }
 .lightbox-close:hover {
     background: rgba(255, 255, 255, 0.22);
