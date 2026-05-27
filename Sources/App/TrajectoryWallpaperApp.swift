@@ -7,17 +7,21 @@ struct TrajectoryWallpaperApp: App {
     @State private var purchaseStore = PurchaseStore()
 
     init() {
-        // TelemetryDeck wired up: events route through the adapter once the
-        // SwiftSDK package is added in Xcode. Until the package is present,
-        // `TelemetryDeckAdapter` is excluded by `#if canImport(...)` and
-        // this assignment falls back to the NoOp default.
-        #if canImport(TelemetryDeck)
-        Telemetry.current = TelemetryDeckAdapter(
-            appID: "F9AFC066-2EFA-4D0C-AE7B-1C7B5F8AB6AF"
-        )
-        #endif
+        // Telemetry is intentionally DISABLED for the App Store launch — the
+        // Privacy nutrition label declares "Data Not Collected", so no
+        // analytics signals are sent. The Telemetry abstraction stays in
+        // place (calls route to NoOpTelemetry which only logs in DEBUG, never
+        // hits a network), and `TelemetryDeckAdapter` is still in the
+        // repo behind `#if canImport(TelemetryDeck)`. To re-enable later:
+        // uncomment the assignment below + update the privacy declarations.
+        //
+        // #if canImport(TelemetryDeck)
+        // Telemetry.current = TelemetryDeckAdapter(
+        //     appID: "F9AFC066-2EFA-4D0C-AE7B-1C7B5F8AB6AF"
+        // )
+        // #endif
 
-        Telemetry.track(.appLaunched)
+        Telemetry.track(.appLaunched)  // routes through NoOp → no network
     }
 
     var body: some Scene {

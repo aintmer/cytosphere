@@ -57,7 +57,7 @@ EXPORTS
 Pick your aspect (square, iPhone portrait, iPad portrait, custom) and resolution (Standard 6K, High 10K, Ultra 16K). Saves directly to Photos on iPhone/iPad, with full save-panel control on Mac.
 
 PRIVACY
-No accounts. No ads. No third-party trackers. The only data sent off-device is anonymous event counts (which patterns are most used) — and you can verify this by reading the open-source-style telemetry abstraction in the app's About page.
+No accounts. No ads. No analytics. The app runs entirely on your device and makes no outbound network connections of its own — the only thing that touches Apple's servers is the standard in-app-purchase verification, handled by iOS itself.
 
 ACCESSIBILITY
 Full Dynamic Type support. VoiceOver labels on every control. High-contrast aware. Built natively in SwiftUI for the Apple platform.
@@ -110,20 +110,19 @@ Recommend: **Free**, with potential future IAP to unlock Ultra (16K) quality and
 
 ## Privacy Nutrition Label
 
-Based on what Cytosphere actually collects (just TelemetryDeck anonymous events):
+Cytosphere collects **no data**. The Privacy label is the cleanest possible:
 
-| Category | Data Collected | Linked to User | Used for Tracking |
-|---|---|---|---|
-| Usage Data | Product Interaction (event counts) | **No** | **No** |
-| Everything else | None | — | — |
+> **Data Not Collected** — The developer does not collect any data from this app.
 
 Specifically:
-- ✅ Yes, the app collects "Product Interaction"
-- ❌ Not linked to user identity
-- ❌ Not used to track across apps
-- ❌ No advertising data, no location, no contact info, no health data
+- ❌ No personal data, no usage data, no analytics
+- ❌ No advertising, no tracking
+- ❌ No third-party SDKs that collect data
+- ❌ No outbound network connections from app code (only Apple's standard
+  IAP receipt verification, handled by iOS itself)
 
-This is the "good citizen" Privacy label — privacy-conscious users will see it and trust the app.
+In App Store Connect → App Privacy → Data Collection, answer "No data
+collected" / leave every category unchecked.
 
 ## Screenshots — required device sizes
 
