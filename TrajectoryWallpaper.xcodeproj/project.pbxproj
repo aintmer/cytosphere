@@ -99,7 +99,6 @@
 			);
 			mainGroup = AA0000000000000000000004;
 			packageReferences = (
-				301CB4982FC52C45000E17DC /* XCRemoteSwiftPackageReference "SwiftSDK" */,
 			);
 			productRefGroup = AA0000000000000000000005 /* Products */;
 			projectDirPath = "";
