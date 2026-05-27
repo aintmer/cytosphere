@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		301CB49A2FC52C45000E17DC /* TelemetryClient in Frameworks */ = {isa = PBXBuildFile; productRef = 301CB4992FC52C45000E17DC /* TelemetryClient */; };
-		301CB49C2FC52C45000E17DC /* TelemetryDeck in Frameworks */ = {isa = PBXBuildFile; productRef = 301CB49B2FC52C45000E17DC /* TelemetryDeck */; };
 		301CB4A32FC54781000E17DC /* Cytosphere.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 301CB4A22FC54781000E17DC /* Cytosphere.storekit */; };
 /* End PBXBuildFile section */
 
@@ -26,8 +24,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				301CB49A2FC52C45000E17DC /* TelemetryClient in Frameworks */,
-				301CB49C2FC52C45000E17DC /* TelemetryDeck in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -288,30 +284,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		301CB4982FC52C45000E17DC /* XCRemoteSwiftPackageReference "SwiftSDK" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/TelemetryDeck/SwiftSDK";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.14.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		301CB4992FC52C45000E17DC /* TelemetryClient */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 301CB4982FC52C45000E17DC /* XCRemoteSwiftPackageReference "SwiftSDK" */;
-			productName = TelemetryClient;
-		};
-		301CB49B2FC52C45000E17DC /* TelemetryDeck */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 301CB4982FC52C45000E17DC /* XCRemoteSwiftPackageReference "SwiftSDK" */;
-			productName = TelemetryDeck;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = AA0000000000000000000001 /* Project object */;
 }

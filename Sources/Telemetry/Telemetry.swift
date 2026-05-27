@@ -71,6 +71,12 @@ struct NoOpTelemetry: TelemetryBackend {
     }
 }
 
-// TelemetryDeck adapter lives in TelemetryDeckAdapter.swift, gated on
-// `#if canImport(TelemetryDeck)`. Activate it from
-// `TrajectoryWallpaperApp.init()` once the SDK is added.
+// No analytics backend is active. All `Telemetry.track(...)` call sites in
+// the app route through `NoOpTelemetry` (above) which does nothing in
+// release and only prints to stdout in DEBUG. The Privacy nutrition label
+// declares "Data Not Collected" to match.
+//
+// To re-enable analytics later, add an SDK as a Swift Package, write a
+// `TelemetryBackend` adapter, and assign it to `Telemetry.current` from
+// `TrajectoryWallpaperApp.init()`. Update the privacy declarations to
+// match — see /docs/privacy.html and AppStoreCopy.md.
