@@ -26,16 +26,16 @@ Alternates within limit:
 Recommended: **Wallpapers from real science**
 
 ## Promotional Text (170 chars max — editable any time without re-review)
-**Twelve generative patterns rendered natively at up to 16K. Atomic orbitals, mitosis, viral capsids, neutrophils, Feynman diagrams — and ten more. No AI. No tracking.**
+**Thirteen generative patterns rendered natively up to 16K. Atomic orbitals, mitosis, viral capsids, neutrophils, Feynman diagrams — and eight more. No AI. No tracking.**
 
-*(168/170)*
+*(~166/170)*
 
 ## Description (4000 chars max)
 
 ```
 Cytosphere generates large-format wallpapers from real scientific imagery.
 
-Twelve generative patterns drawn from biology, chemistry, and physics. Every wallpaper is a unique procedural composition — rendered natively at up to 16K, no two ever the same.
+Thirteen generative patterns drawn from biology, chemistry, and physics. Every wallpaper is a unique procedural composition — rendered natively at up to 16K, no two ever the same.
 
 PATTERNS
 • Blood elements — full hematopoietic lineage from CC-BY-SA Wikipedia sources
@@ -51,7 +51,7 @@ PATTERNS
 • Parasites — protozoa and helminth eggs
 
 CONTROLS
-Fine-grained sliders for color, density, depth-of-field, element scale, opacity, and per-cell hue. Every change re-renders the preview instantly. Save your favorite configurations as presets.
+Fine-grained sliders for color, density, depth-of-field, element scale, opacity, and per-cell hue. Every change re-renders the preview instantly. Pinch to zoom in and inspect any detail. Save your favorite configurations as presets.
 
 EXPORTS
 Pick your aspect (square, iPhone portrait, iPad portrait, custom) and resolution (Standard 6K, High 10K, Ultra 16K). Saves directly to Photos on iPhone/iPad, with full save-panel control on Mac.
@@ -84,7 +84,7 @@ These are chosen for App Store SEO. Notes on the choices:
 
 **1.0**
 ```
-Initial release. Twelve generative patterns from biology, chemistry, and physics. Rendered natively up to 16K.
+Initial release. Thirteen generative patterns from biology, chemistry, and physics. Rendered natively up to 16K.
 
 If you love it, leaving a review helps a lot. Thank you for trying Cytosphere.
 ```
@@ -106,7 +106,7 @@ Same site: `https://aintmer.github.io/cytosphere/privacy`
 **4+** — no objectionable content. The wallpaper rendering is purely abstract scientific imagery.
 
 ## Pricing Tier
-Recommend: **Free**, with potential future IAP to unlock Ultra (16K) quality and/or pattern packs. Start free to maximize downloads + reviews.
+**Free** download. One non-consumable IAP — `com.aintmer.cytosphere.unlock_all` (€9.99) — unlocks all patterns. Two patterns ship free (Mitosis, Sketch Organelles) so first-time users get a real taste.
 
 ## Privacy Nutrition Label
 
