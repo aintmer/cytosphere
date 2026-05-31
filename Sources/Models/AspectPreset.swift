@@ -9,6 +9,7 @@ enum AspectPreset: String, CaseIterable, Identifiable, Hashable, Codable {
     case square6k
     case iPhonePortrait
     case iPadPortrait
+    case macLandscape
 
     var id: String { rawValue }
 
@@ -21,6 +22,7 @@ enum AspectPreset: String, CaseIterable, Identifiable, Hashable, Codable {
         case .square6k:       return CGSize(width: 6000, height: 6000)
         case .iPhonePortrait: return CGSize(width: 1320, height: 2868)
         case .iPadPortrait:   return CGSize(width: 2048, height: 2732)
+        case .macLandscape:   return CGSize(width: 2880, height: 1800)
         }
     }
 
@@ -34,6 +36,7 @@ enum AspectPreset: String, CaseIterable, Identifiable, Hashable, Codable {
         case .square6k:       return "Square — 6000×6000"
         case .iPhonePortrait: return "iPhone portrait — 1320×2868"
         case .iPadPortrait:   return "iPad portrait — 2048×2732"
+        case .macLandscape:   return "Mac landscape — 2880×1800"
         }
     }
 }

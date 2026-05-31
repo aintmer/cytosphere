@@ -133,7 +133,6 @@ private struct PresetRow: View {
     }
 
     private func backgroundSwatch(_ bg: BackgroundPreset) -> Color {
-        let rgba = bg.baseRGB
-        return Color(red: rgba.r, green: rgba.g, blue: rgba.b)
+        bg.baseRGB.color
     }
 }

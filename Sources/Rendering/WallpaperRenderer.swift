@@ -19,15 +19,20 @@ enum WallpaperRenderer {
         //   scale     — from the ACTUAL render size, so element sizes/spacing
         //               stay proportional whether previewing small or
         //               exporting huge (it self-corrects across resolutions).
-        //   areaScale — from the aspect's LOGICAL size, so element COUNT is
-        //               identical in the preview and the export. Computing it
-        //               from the render size would make the preview sparse.
+        //   areaScale — anchored to a CANONICAL reference area so element
+        //               COUNT is independent of the aspect. Earlier versions
+        //               used the aspect's logical area, which made non-square
+        //               aspects (iPhone/iPad/Mac) sparse because their logical
+        //               areas are 5–10× smaller than the Square presets even
+        //               though the user expects "density 1.0" to look the same
+        //               across aspects. Element SIZE still scales with the
+        //               actual render via `scale`, so preview ↔ export parity
+        //               at a given aspect is preserved.
         let refArea = 2880.0 * 1864.0
         let canvasArea = Double(size.width) * Double(size.height)
-        let logical = config.aspect.size
-        let logicalArea = Double(logical.width) * Double(logical.height)
+        let canonicalLogicalArea = 6000.0 * 6000.0   // Square 6K — base tuning
         let scale = (sqrt(canvasArea) / sqrt(refArea)) * config.elementScale
-        let areaScale = logicalArea / refArea
+        let areaScale = canonicalLogicalArea / refArea
             / (config.elementScale * config.elementScale)
 
         // Fresh PRNG per render — counter starts at 0, like resetSeedCounter().

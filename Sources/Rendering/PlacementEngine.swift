@@ -188,7 +188,17 @@ enum PlacementEngine {
                                     _ body: (CGContext) -> Void) {
         let cappedBlur = min(18.0, blur)
 
-        if cappedBlur < 0.75 {
+        // Skip the depth-of-field blur for small renders — the live preview's
+        // in-drag "draft" frames (capped ~720px) and preset thumbnails. Each
+        // blurred layer ends in a `CIContext.createCGImage` round-trip whose
+        // cost is a fixed GPU readback stall *independent of resolution*, so
+        // three of them per frame is the main thing making a fast drag stutter
+        // (shrinking pixels never touched it). The DoF is imperceptible at
+        // these sizes, and the full-size settle frame + the export still render
+        // it. Keep this threshold above LivePreviewRenderer's interactive cap.
+        let isSmallDraft = max(size.width, size.height) < 760
+
+        if cappedBlur < 0.75 || isSmallDraft {
             // Sharp layer — draw straight into the main context.
             cg.saveGState()
             cg.setAlpha(CGFloat(opacity))

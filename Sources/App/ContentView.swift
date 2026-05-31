@@ -1,49 +1,40 @@
 import SwiftUI
 
-/// Root layout. macOS: canvas + sidebar side by side. iOS: full-bleed canvas
-/// with the controls in a bottom sheet.
+/// Root layout — routes by platform and (on iOS) horizontal size class:
+/// - iPhone (compact)  → `EditorScreen` (photo-editor: bottom toolbar + floating panel)
+/// - iPad   (regular)  → `InspectorScreen` (side panel with category tabs)
+/// - macOS             → `InspectorScreen`
+///
+/// The Mac and iPad paths share `InspectorScreen`. Same `EditorCategory`
+/// enum and per-category panel components drive both that and the iPhone
+/// layout, so behavior stays in sync.
 struct ContentView: View {
-    @Environment(AppState.self) private var state
+    #if !os(macOS)
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    #endif
 
     var body: some View {
         #if os(macOS)
-        HSplitView {
-            CanvasView(config: state.config, aspect: state.aspect)
-                .frame(minWidth: 420)
-                .padding()
-            SidebarView(state: state)
-                .frame(width: 320)
-        }
-        .frame(minWidth: 920, minHeight: 660)
+        // On Mac, `.toolbar` on the root view attaches to the window's
+        // NSToolbar automatically — no NavigationStack needed.
+        InspectorScreen()
         #else
-        iosLayout
+        if horizontalSizeClass == .regular {
+            // iPad in landscape, full-screen, or wide split — use the
+            // Mac-style inspector. iPad in compact (narrow split) falls
+            // through to the iPhone layout.
+            //
+            // NavigationStack wrapper is required on iOS for `.toolbar`
+            // items to actually render — iOS doesn't have a window-level
+            // toolbar like Mac, so toolbar items live in a navigation bar.
+            NavigationStack {
+                InspectorScreen()
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbarTitleDisplayMode(.inline)
+            }
+        } else {
+            EditorScreen()
+        }
         #endif
     }
-
-    #if !os(macOS)
-    @State private var showControls = true
-
-    private var iosLayout: some View {
-        CanvasView(config: state.config, aspect: state.aspect)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.black)
-            .ignoresSafeArea()
-            .overlay(alignment: .bottomTrailing) {
-                Button {
-                    showControls.toggle()
-                } label: {
-                    Image(systemName: "slider.horizontal.3")
-                        .font(.title3)
-                        .padding(14)
-                        .background(.thinMaterial, in: Circle())
-                }
-                .padding()
-            }
-            .sheet(isPresented: $showControls) {
-                SidebarView(state: state)
-                    .presentationDetents([.medium, .large])
-                    .presentationBackgroundInteraction(.enabled)
-            }
-    }
-    #endif
 }

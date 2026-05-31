@@ -53,7 +53,14 @@ final class AppState {
         self.pattern             = loaded?.pattern             ?? .mitosis
         self.background          = loaded?.background          ?? .void
         self.backgroundLightness = loaded?.backgroundLightness ?? 0
+        // Default aspect varies by platform — iPhone fills the screen with
+        // a portrait wallpaper, Mac/iPad default to a square so the export
+        // works generally. Once the user picks an aspect, that wins.
+        #if os(iOS)
+        self.aspect              = loaded?.aspect              ?? .iPhonePortrait
+        #else
         self.aspect              = loaded?.aspect              ?? .square6k
+        #endif
         self.elementScale        = loaded?.elementScale        ?? 1.0
         self.density             = loaded?.density             ?? 1.0
         self.hue                 = loaded?.hue                 ?? 0

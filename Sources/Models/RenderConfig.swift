@@ -7,7 +7,7 @@ import Foundation
 ///
 /// `Codable` so it round-trips via UserDefaults (for last-used config) and
 /// JSON (for the presets store).
-struct RenderConfig: Equatable, Codable {
+struct RenderConfig: Equatable, Hashable, Codable {
     var pattern: Pattern
     var background: BackgroundPreset
     var aspect: AspectPreset          // drives density math (logical canvas size)

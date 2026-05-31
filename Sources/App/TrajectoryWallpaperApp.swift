@@ -5,6 +5,7 @@ struct TrajectoryWallpaperApp: App {
     @State private var appState = AppState()
     @State private var presetStore = PresetStore()
     @State private var purchaseStore = PurchaseStore()
+    @State private var thumbnailStore = PresetThumbnailStore()
 
     init() {
         // Telemetry is intentionally DISABLED for the App Store launch — the
@@ -30,6 +31,7 @@ struct TrajectoryWallpaperApp: App {
                 .environment(appState)
                 .environment(presetStore)
                 .environment(purchaseStore)
+                .environment(thumbnailStore)
         }
         #if os(macOS)
         .defaultSize(width: 1100, height: 760)
