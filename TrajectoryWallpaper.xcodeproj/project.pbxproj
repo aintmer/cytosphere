@@ -195,6 +195,7 @@
 				DEVELOPMENT_TEAM = F6GPTM54F7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "macOS.entitlements";
 				INFOPLIST_KEY_CFBundleDisplayName = Cytosphere;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.graphics-design";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Saves wallpapers you export to your photo library.";
@@ -233,6 +234,7 @@
 				DEVELOPMENT_TEAM = F6GPTM54F7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "macOS.entitlements";
 				INFOPLIST_KEY_CFBundleDisplayName = Cytosphere;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.graphics-design";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Saves wallpapers you export to your photo library.";

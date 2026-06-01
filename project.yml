@@ -47,3 +47,6 @@ targets:
         # internal project + bundle ID stay as TrajectoryWallpaper so we
         # don't break dev paths or App Store identity.
         INFOPLIST_KEY_CFBundleDisplayName: Cytosphere
+        # Mac App Store requires App Sandbox. macOS-only so the iOS build is
+        # unaffected (it must NOT carry the app-sandbox entitlement).
+        "CODE_SIGN_ENTITLEMENTS[sdk=macosx*]": macOS.entitlements
