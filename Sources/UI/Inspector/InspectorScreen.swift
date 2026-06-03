@@ -22,7 +22,14 @@ struct InspectorScreen: View {
         @Bindable var state = state
 
         canvasAndInspector
+            // Window-sizing floor is a macOS concern. On iPad this forced the
+            // canvas+inspector wider than the screen (e.g. 920 > 834pt on an
+            // iPad Air 11" in portrait), pushing the inspector's right edge —
+            // sliders, menu values, the export button — off-screen and
+            // truncating text. App Review flagged exactly this (Guideline 4).
+            #if os(macOS)
             .frame(minWidth: 920, minHeight: 660)
+            #endif
             .toolbar { toolbarContent }
             .sheet(isPresented: $showingAbout) {
                 #if os(macOS)
