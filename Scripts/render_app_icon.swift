@@ -37,6 +37,13 @@ struct C {
         self.a = CGFloat(a)
     }
     func alpha(_ a: Double) -> C { C(Double(r), Double(g), Double(b), a) }
+    /// Push each channel away from the pixel's own luminance (k>1 = punchier,
+    /// less washed-out). Used to give the pastel cell fills more definition.
+    func saturated(_ k: Double) -> C {
+        let lum = 0.299 * r + 0.587 * g + 0.114 * b
+        func mix(_ c: CGFloat) -> Double { Double(max(0, min(1, lum + (c - lum) * CGFloat(k)))) }
+        return C(mix(r), mix(g), mix(b), Double(a))
+    }
     var cg: CGColor { CGColor(srgbRed: r, green: g, blue: b, alpha: a) }
 }
 
@@ -122,6 +129,10 @@ enum Pal {
     // Background — pastel lavender (linear top-left → bottom-right)
     static let bgStart      = C(hex: "#E8DCF2")
     static let bgEnd        = C(hex: "#B89ED4")
+    // Dark-appearance background (iOS Light/Dark app icon, iOS 18+) — a deep
+    // purple-black so the cell cluster reads as glowing against it.
+    static let bgDarkStart  = C(hex: "#1C1030")
+    static let bgDarkEnd    = C(hex: "#050108")
     // Sphere base radial — interior fill so micro-gaps between cells don't show
     static let baseInner    = C(rgb255: 182, 104, 152)
     static let baseOuter    = C(hex: "#6A2078")
@@ -134,7 +145,7 @@ enum Pal {
 
 // MARK: - Drawing
 
-func drawCytosphere(_ cg: CGContext, size: Double) {
+func drawCytosphere(_ cg: CGContext, size: Double, dark: Bool = false) {
     let cx = size / 2
     let cy = size / 2
     // All SVG coordinates are in 1024-space; multiply by this to render at
@@ -150,9 +161,13 @@ func drawCytosphere(_ cg: CGContext, size: Double) {
     cg.scaleBy(x: 1, y: -1)
 
     // -------- Background gradient (top-left → bottom-right) --------
+    // Light theme = pale lavender; dark theme (iOS dark app icon) = deep
+    // purple-black so the same vivid cells read as glowing.
     let cs = CGColorSpace(name: CGColorSpace.sRGB)!
+    let bg0 = dark ? Pal.bgDarkStart : Pal.bgStart
+    let bg1 = dark ? Pal.bgDarkEnd   : Pal.bgEnd
     if let g = CGGradient(colorsSpace: cs,
-                          colors: [Pal.bgStart.cg, Pal.bgEnd.cg] as CFArray,
+                          colors: [bg0.cg, bg1.cg] as CFArray,
                           locations: [0, 1]) {
         cg.drawLinearGradient(g,
             start: CGPoint(x: 0, y: 0),
@@ -160,15 +175,17 @@ func drawCytosphere(_ cg: CGContext, size: Double) {
             options: [.drawsBeforeStartLocation, .drawsAfterEndLocation])
     }
 
-    // -------- Soft ground shadow --------
-    cg.saveGState()
-    cg.setFillColor(C(0, 0, 0, 0.28).cg)
-    let shadowRx = 270.0 * scale
-    let shadowRy = 28.0 * scale
-    let shadowCy = 888.0 * scale
-    cg.fillEllipse(in: CGRect(x: cx - shadowRx, y: shadowCy - shadowRy,
-                              width: 2 * shadowRx, height: 2 * shadowRy))
-    cg.restoreGState()
+    // -------- Soft ground shadow (light theme only — invisible on dark) -----
+    if !dark {
+        cg.saveGState()
+        cg.setFillColor(C(0, 0, 0, 0.28).cg)
+        let shadowRx = 270.0 * scale
+        let shadowRy = 28.0 * scale
+        let shadowCy = 888.0 * scale
+        cg.fillEllipse(in: CGRect(x: cx - shadowRx, y: shadowCy - shadowRy,
+                                  width: 2 * shadowRx, height: 2 * shadowRy))
+        cg.restoreGState()
+    }
 
     // -------- Sphere base (radial fill inside the cell cluster) --------
     let baseBox = CGRect(x: cx - baseR, y: cy - baseR,
@@ -194,12 +211,14 @@ func drawCytosphere(_ cg: CGContext, size: Double) {
     // -------- Outer perimeter glow --------
     let glowBox = CGRect(x: cx - glowR, y: cy - glowR,
                          width: 2 * glowR, height: 2 * glowR)
+    // Brighter glow peak on dark so the perimeter reads as luminous.
+    let glowPeak = dark ? 0.9 : 0.55
     let glowGrad = CGGradient(
         colorsSpace: cs,
         colors: [
             Pal.glow.alpha(0).cg,
             Pal.glow.alpha(0).cg,
-            Pal.glow.alpha(0.55).cg,
+            Pal.glow.alpha(glowPeak).cg,
             Pal.glow.alpha(0).cg,
         ] as CFArray,
         locations: [0, 0.60, 0.92, 1.0]
@@ -224,12 +243,14 @@ func drawCytosphere(_ cg: CGContext, size: Double) {
         let py = cell.cy * scale
         let r  = cell.r  * scale
         let sw = cell.strokeW * scale
-        let fill   = C(rgb255: cell.fillR, cell.fillG, cell.fillB)
-        let stroke = Pal.cellStroke.alpha(cell.strokeOp)
+        // Punchier, less-washed fills + crisper, more opaque & slightly wider
+        // outlines so each cell reads as well-defined at small Home Screen sizes.
+        let fill   = C(rgb255: cell.fillR, cell.fillG, cell.fillB).saturated(1.3)
+        let stroke = Pal.cellStroke.alpha(min(0.95, cell.strokeOp * 1.7))
 
         cg.setFillColor(fill.cg)
         cg.setStrokeColor(stroke.cg)
-        cg.setLineWidth(CGFloat(sw))
+        cg.setLineWidth(CGFloat(sw * 1.3))
         cg.addEllipse(in: CGRect(x: px - r, y: py - r, width: 2 * r, height: 2 * r))
         cg.drawPath(using: .fillStroke)
 
@@ -246,7 +267,7 @@ func drawCytosphere(_ cg: CGContext, size: Double) {
     // -------- Specular highlight (top-left) --------
     drawRotatedEllipse(cg, cx: 378 * scale, cy: 318 * scale,
                        rx: 138 * scale, ry: 56 * scale,
-                       angleDeg: -32, fill: C(1, 1, 1, 0.18))
+                       angleDeg: -32, fill: C(1, 1, 1, 0.11))
     drawRotatedEllipse(cg, cx: 348 * scale, cy: 278 * scale,
                        rx:  58 * scale, ry: 20 * scale,
                        angleDeg: -32, fill: C(1, 1, 1, 0.40))
@@ -264,7 +285,7 @@ func drawRotatedEllipse(_ cg: CGContext, cx: Double, cy: Double,
 
 // MARK: - Bitmap + PNG output
 
-func renderPNG(size: Int, to url: URL) throws {
+func renderPNG(size: Int, to url: URL, dark: Bool = false) throws {
     let cs = CGColorSpace(name: CGColorSpace.sRGB)!
     guard let cg = CGContext(
         data: nil, width: size, height: size,
@@ -274,7 +295,7 @@ func renderPNG(size: Int, to url: URL) throws {
 
     cg.setShouldAntialias(true)
     cg.interpolationQuality = .high
-    drawCytosphere(cg, size: Double(size))
+    drawCytosphere(cg, size: Double(size), dark: dark)
 
     guard let img = cg.makeImage() else { throw NSError(domain: "icon", code: 2) }
     guard let dest = CGImageDestinationCreateWithURL(
@@ -299,24 +320,27 @@ let contentsJSON = """
     { "filename" : "mac-256@2x.png",  "idiom" : "mac",       "scale" : "2x", "size" : "256x256" },
     { "filename" : "mac-512.png",     "idiom" : "mac",       "scale" : "1x", "size" : "512x512" },
     { "filename" : "mac-512@2x.png",  "idiom" : "mac",       "scale" : "2x", "size" : "512x512" },
-    { "filename" : "ios-1024.png",    "idiom" : "universal", "platform" : "ios", "size" : "1024x1024" }
+    { "filename" : "ios-1024.png",    "idiom" : "universal", "platform" : "ios", "size" : "1024x1024" },
+    { "filename" : "ios-1024-dark.png", "idiom" : "universal", "platform" : "ios", "size" : "1024x1024", "appearances" : [ { "appearance" : "luminosity", "value" : "dark" } ] }
   ],
   "info" : { "author" : "xcode", "version" : 1 }
 }
 """
 
-let slots: [(file: String, px: Int)] = [
-    ("mac-16.png",     16),
-    ("mac-16@2x.png",  32),
-    ("mac-32.png",     32),
-    ("mac-32@2x.png",  64),
-    ("mac-128.png",   128),
-    ("mac-128@2x.png", 256),
-    ("mac-256.png",   256),
-    ("mac-256@2x.png", 512),
-    ("mac-512.png",   512),
-    ("mac-512@2x.png", 1024),
-    ("ios-1024.png",  1024),
+let slots: [(file: String, px: Int, dark: Bool)] = [
+    ("mac-16.png",        16,  false),
+    ("mac-16@2x.png",     32,  false),
+    ("mac-32.png",        32,  false),
+    ("mac-32@2x.png",     64,  false),
+    ("mac-128.png",      128,  false),
+    ("mac-128@2x.png",   256,  false),
+    ("mac-256.png",      256,  false),
+    ("mac-256@2x.png",   512,  false),
+    ("mac-512.png",      512,  false),
+    ("mac-512@2x.png",  1024,  false),
+    ("ios-1024.png",    1024,  false),
+    // iOS dark-appearance variant (Light/Dark app icon, iOS 18+).
+    ("ios-1024-dark.png", 1024, true),
 ]
 
 let assetsContentsJSON = """
@@ -352,8 +376,8 @@ if let existing = try? FileManager.default.contentsOfDirectory(atPath: iconDir.p
 
 for slot in slots {
     let url = iconDir.appendingPathComponent(slot.file)
-    try renderPNG(size: slot.px, to: url)
-    print("✓ \(slot.file) (\(slot.px)px)")
+    try renderPNG(size: slot.px, to: url, dark: slot.dark)
+    print("✓ \(slot.file) (\(slot.px)px)\(slot.dark ? " [dark]" : "")")
 }
 
 print("\nWrote \(slots.count) PNGs + Contents.json to:")
