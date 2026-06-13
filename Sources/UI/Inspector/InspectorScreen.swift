@@ -201,7 +201,8 @@ struct InspectorScreen: View {
     }
 
     private func exportTapped() {
-        guard purchaseStore.canAccess(state.pattern) else {
+        guard purchaseStore.canAccess(state.pattern),
+              purchaseStore.canAccess(state.exportQuality) else {
             showingPaywall = true
             return
         }
@@ -231,7 +232,8 @@ struct InspectorScreen: View {
         case .rendering: return "Rendering…"
         case .saving:    return "Saving…"
         default:
-            return purchaseStore.canAccess(state.pattern)
+            return (purchaseStore.canAccess(state.pattern)
+                    && purchaseStore.canAccess(state.exportQuality))
                 ? "Export PNG"
                 : "Unlock to export"
         }

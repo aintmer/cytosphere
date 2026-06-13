@@ -8,7 +8,7 @@
       "internalID" : "B12345AA",
       "localizations" : [
         {
-          "description" : "Unlocks all twelve generative patterns and the full export resolution range.",
+          "description" : "Unlocks all thirteen generative patterns and the full export resolution range.",
           "displayName" : "Unlock All Patterns",
           "locale" : "en_US"
         }

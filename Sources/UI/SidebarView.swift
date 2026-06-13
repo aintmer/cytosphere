@@ -88,14 +88,20 @@ struct SidebarView: View {
                 Divider()
 
                 labeledPicker("Export quality", selection: $state.exportQuality) {
-                    ForEach(DeviceCapabilities.availableQualities) {
-                        Text($0.displayName).tag($0)
+                    ForEach(DeviceCapabilities.availableQualities) { quality in
+                        // 🔒 on tiers above the free ceiling until unlocked —
+                        // mirrors the pattern picker; export is gated below.
+                        let label = quality.displayName +
+                            (purchaseStore.canAccess(quality) ? "" : " 🔒")
+                        Text(label).tag(quality)
                     }
                 }
                 Button(exportButtonLabel) {
-                    // Gate export on the unlock entitlement — paid pattern +
-                    // no purchase opens the paywall instead of exporting.
-                    guard purchaseStore.canAccess(state.pattern) else {
+                    // Gate export on the unlock entitlement — a paid pattern OR
+                    // a paid resolution with no purchase opens the paywall
+                    // instead of exporting.
+                    guard purchaseStore.canAccess(state.pattern),
+                          purchaseStore.canAccess(state.exportQuality) else {
                         showingPaywall = true
                         return
                     }
@@ -182,7 +188,8 @@ struct SidebarView: View {
         case .rendering: return "Rendering…"
         case .saving:    return "Saving…"
         default:
-            return purchaseStore.canAccess(state.pattern)
+            return (purchaseStore.canAccess(state.pattern)
+                    && purchaseStore.canAccess(state.exportQuality))
                 ? "Export PNG"
                 : "Unlock to export"
         }

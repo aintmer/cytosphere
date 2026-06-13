@@ -29,12 +29,16 @@ final class PresetStore {
     private static let storeKey = "TrajectoryWallpaper.presets"
 
     init() {
-        self.presets = Self.load()
-        // First-launch bootstrap: ship a couple of starter presets so the
-        // user sees the feature is alive even before they save anything.
-        if self.presets.isEmpty {
+        // First-launch bootstrap: ship starter presets ONLY when nothing has
+        // ever been persisted. Keying on `isEmpty` would re-install them every
+        // launch after the user deliberately deletes every preset; keying on
+        // the existence of the storage key distinguishes a true first launch
+        // from an intentionally-emptied list.
+        if UserDefaults.standard.object(forKey: Self.storeKey) == nil {
             self.presets = Self.starterPresets
             persist()
+        } else {
+            self.presets = Self.load()
         }
     }
 

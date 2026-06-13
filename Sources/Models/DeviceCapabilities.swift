@@ -25,6 +25,15 @@ enum ExportQuality: String, CaseIterable, Identifiable, Hashable, Codable {
         case .ultra:    return "Ultra — 16K"
         }
     }
+
+    /// The highest tier available without the in-app unlock. Tiers above this
+    /// require `unlock_all` — this mirrors the paywall + StoreKit promise that
+    /// the full export-resolution range is part of the purchase. Gating is
+    /// applied centrally via `PurchaseStore.canAccess(_:)`.
+    static let freeCeiling: ExportQuality = .standard
+
+    /// Whether this tier is usable without the unlock.
+    var isFreeTier: Bool { dimension <= ExportQuality.freeCeiling.dimension }
 }
 
 /// Picks the export tiers a device can handle, based on physical RAM.

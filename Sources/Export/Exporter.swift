@@ -24,6 +24,10 @@ enum Exporter {
         case saving
         case success(String)
         case failure(String)
+        /// Photos write access was denied or restricted (iOS). Kept distinct
+        /// from a generic `failure` so the UI can offer an actionable "Open
+        /// Settings" button instead of a dead-end "Tap to open Settings" line.
+        case failurePhotosDenied
     }
 
     static func export(config: RenderConfig,
@@ -93,6 +97,12 @@ enum Exporter {
             ])
         } catch ExportError.cancelled {
             status(.idle)
+        } catch ExportError.photosAccessDenied {
+            status(.failurePhotosDenied)
+            Telemetry.track(.exportFailed, [
+                "pattern": config.pattern.rawValue,
+                "reason":  "photos_denied",
+            ])
         } catch {
             status(.failure(error.localizedDescription))
             Telemetry.track(.exportFailed, [

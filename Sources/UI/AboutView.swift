@@ -23,7 +23,7 @@ struct AboutView: View {
 
                 Group {
                     section("About") {
-                        Text("Cytosphere generates large-format scientific wallpapers — twelve generative patterns drawn from biology, chemistry, and physics, all rendered natively at up to 16K.")
+                        Text("Cytosphere generates large-format scientific wallpapers — thirteen generative patterns drawn from biology, chemistry, and physics, all rendered natively at up to 16K.")
                     }
 
                     section("Patterns") {
@@ -50,7 +50,7 @@ struct AboutView: View {
                                       systemImage: "checkmark.seal.fill")
                                     .foregroundStyle(.tint)
                             } else {
-                                Text("Mitosis and Sketch Organelles are free. The remaining ten patterns are available with a one-time in-app purchase.")
+                                Text("Mitosis and Sketch Organelles are free at Standard 6K. A one-time in-app purchase unlocks all thirteen patterns and the full export-resolution range, up to 16K.")
                             }
                             Button {
                                 Task { await tapRestore() }
@@ -100,10 +100,14 @@ struct AboutView: View {
     private func tapRestore() async {
         isRestoring = true
         defer { isRestoring = false }
-        await purchaseStore.restorePurchases()
-        restoreMessage = purchaseStore.isUnlocked
-            ? "Restored — all patterns unlocked."
-            : "No previous purchase found for this Apple ID."
+        switch await purchaseStore.restorePurchases() {
+        case .unlocked:
+            restoreMessage = "Restored — all patterns unlocked."
+        case .noPurchaseFound:
+            restoreMessage = "No previous purchase found for this Apple ID."
+        case .failed(let msg):
+            restoreMessage = "Couldn't reach the App Store to restore: \(msg). Check your connection and try again."
+        }
     }
 
     @ViewBuilder

@@ -112,14 +112,27 @@ final class PurchaseStore {
 
     // MARK: - Restore
 
+    enum RestoreOutcome {
+        /// `AppStore.sync()` succeeded and an active `unlock_all` entitlement
+        /// is present.
+        case unlocked
+        /// Sync succeeded but no entitlement was found for this Apple ID.
+        case noPurchaseFound
+        /// Sync itself failed (offline, transient StoreKit error). The caller
+        /// should offer a retry rather than claim no purchase exists.
+        case failed(String)
+    }
+
     @MainActor
-    func restorePurchases() async {
+    func restorePurchases() async -> RestoreOutcome {
         do {
             try await AppStore.sync()
             await refreshEntitlements()
+            return isUnlocked ? .unlocked : .noPurchaseFound
         } catch {
             lastError = error.localizedDescription
             Telemetry.recordError(error, context: "restorePurchases")
+            return .failed(error.localizedDescription)
         }
     }
 
@@ -141,6 +154,14 @@ final class PurchaseStore {
     /// patterns are always available; paid patterns require `isUnlocked`.
     func canAccess(_ pattern: Pattern) -> Bool {
         pattern.isFree || isUnlocked
+    }
+
+    /// True if the given export quality is available to the current user.
+    /// Standard (6K) is free; higher resolutions require `isUnlocked`. Keeps
+    /// the export pipeline aligned with the paywall + StoreKit promise that
+    /// the full resolution range is part of the purchase.
+    func canAccess(_ quality: ExportQuality) -> Bool {
+        quality.isFreeTier || isUnlocked
     }
 
     // MARK: - Transaction listener (handles updates from outside the app —

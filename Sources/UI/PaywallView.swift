@@ -56,7 +56,7 @@ struct PaywallView: View {
 
     private var pitch: some View {
         VStack(alignment: .leading, spacing: 12) {
-            bullet("Twelve generative patterns from biology, chemistry, and physics")
+            bullet("Thirteen generative patterns from biology, chemistry, and physics")
             bullet("All export resolutions, up to 16K")
             bullet("Includes every future pattern pack — yours forever")
             bullet("No ads, no tracking, no subscription")
@@ -142,12 +142,14 @@ struct PaywallView: View {
     private func tapRestore() async {
         isRestoring = true
         defer { isRestoring = false }
-        await store.restorePurchases()
-        if store.isUnlocked {
+        switch await store.restorePurchases() {
+        case .unlocked:
             purchaseMessage = nil
             dismiss()
-        } else {
+        case .noPurchaseFound:
             purchaseMessage = "No previous purchase found for this Apple ID."
+        case .failed(let msg):
+            purchaseMessage = "Couldn't reach the App Store to restore: \(msg). Check your connection and try again."
         }
     }
 }
