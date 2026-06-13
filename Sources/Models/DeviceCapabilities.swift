@@ -43,11 +43,18 @@ enum DeviceCapabilities {
     }
 
     /// Highest tier this device may offer.
+    ///
+    /// `ProcessInfo.physicalMemory` under-reports vs marketed RAM: an "8 GB"
+    /// iPhone returns ~7.4 GiB here, a "6 GB" device ~5.6 GiB, a "4 GB" device
+    /// ~3.7 GiB. The thresholds sit in the GAPS between those clusters so each
+    /// RAM class buckets correctly. (The previous 7.5 cutoff sat just above
+    /// what 8 GB phones report, silently demoting them to High and hiding the
+    /// 16K tier — observed on an iPhone 16 Pro Max, which has 8 GB.)
     static var maxQuality: ExportQuality {
         let gb = memoryGB
-        if gb >= 7.5 { return .ultra }   // 8 GB+ : iPhone 15 Pro / 16 Pro, M-series iPad
-        if gb >= 5.5 { return .high }    // 6 GB  : iPhone 12–14
-        return .standard                 // 4 GB  : older devices
+        if gb >= 7.0 { return .ultra }   // 8 GB devices (~7.4 GiB reported)
+        if gb >= 5.0 { return .high }    // 6 GB devices (~5.6 GiB reported)
+        return .standard                 // 4 GB and below
     }
 
     static var availableQualities: [ExportQuality] {
