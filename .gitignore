@@ -28,7 +28,9 @@ Scripts/.bin/
 
 # Marketing exports (you'll want these locally, not in repo)
 Marketing/screenshots/
-PROMOTION.md   # private go-to-market plan + press contacts — keep out of the public repo
+
+# Private go-to-market plan + press contacts — keep out of the public repo
+PROMOTION.md
 
 # Local temp output
 /tmp/
